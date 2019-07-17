@@ -4,11 +4,12 @@
   "description": "TBD",
   "module": "xtal-radio-group-md.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "node node_modules/xtal-test/serve.js"
   },
   "dependencies": {
-    "trans-render": "0.0.117",
-    "xtal-element": "0.0.63",
+    "trans-render": "0.0.126",
+    "xtal-element": "0.0.76",
     "event-switch": "0.0.12"
   },
   "devDependencies": {
