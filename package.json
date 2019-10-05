@@ -8,12 +8,12 @@
     "serve": "node node_modules/xtal-test/serve.js"
   },
   "dependencies": {
-    "trans-render": "0.0.126",
-    "xtal-element": "0.0.76",
+    "trans-render": "0.0.134",
+    "xtal-element": "0.0.85",
     "event-switch": "0.0.12"
   },
   "devDependencies": {
-    "xtal-test": "0.0.19"
+    "xtal-test": "0.0.20"
   },
   "repository": {
     "type": "git",
