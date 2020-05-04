@@ -1,9 +1,8 @@
-import { XtalElement } from "xtal-element/xtal-element.js";
+import { XtalElement } from "xtal-element/XtalElement.js";
 import { define } from "trans-render/define.js";
 import {repeat} from "trans-render/repeat.js";
-import { createTemplate } from "xtal-element/utils.js";
-import { newEventContext } from "event-switch/event-switch.js";
-import {RenderContext, TransformValueOptions, TransformRules} from 'trans-render/init.d.js';
+import { createTemplate } from "trans-render/createTemplate.js";
+import {RenderContext, TransformValueOptions, TransformRules} from 'trans-render/types.d.js';
 import {update} from 'trans-render/update.js';
 import {init} from 'trans-render/init.js';
 
@@ -112,52 +111,50 @@ const itemTemplate = createTemplate(/* html */`
 
 export class XtalRadioGroupMD extends XtalElement {
     static get is() {
-        return "xtal-radio-group-md";
-    }
-    get mainTemplate() {
-        return mainTemplate;
-    }
-    get initRenderContext() {
-      return {};
+        return 'xtal-radio-group-md';
     }
 
-    _eventContext = newEventContext({
-        slotchange: e =>{
-            (e!.target as HTMLSlotElement).assignedNodes().forEach((nodx) =>{
-                if(nodx.nodeType !== 1) return;
-                const node = nodx as HTMLElement;
-                const datalist = node.localName === 'datalist' ? node : node.querySelector('datalist');
-                if(datalist !== null){
-                    const target = this.root.querySelector('[target]') as HTMLElement;
-                    const itemTransform = {
-                      label: ({idx}) => ({
-                        input: ({target}) => (<any>target).value = (<any>datalist.children[idx]).value,
-                        span: x => (datalist.children[idx].textContent || (<any>datalist).children[idx].value)
-                      })
-                    } as TransformValueOptions;
-                    const ctx = init(formTemplate, {
-                      Transform:{
-                        form: ({target, ctx}) => repeat(itemTemplate, ctx , datalist.children.length, target, itemTransform)
-                      } as TransformRules
-                    }, target);
-                    ctx.update = update;
-                    
-                }
-            })
-            //slot.assignedNodes().forEach((node : HTMLElement) => {
-        },
-        change: e => {
-          this.de('value', {
-            value: (<any>e).target.value
-          })
-        },
-      });
-      get eventContext() {
-        return this._eventContext;
-      }
+    readyToInit = true;
+
+    readyToRender = true;
+
+    mainTemplate = mainTemplate;
+
+    initTransform = {
+      slot: [{}, {slotchange: this.handleSlotChange}],
+      '[target]': [{}, {change: this.handleChange}]
+    } as TransformRules;
+
+    handleSlotChange(e: Event){
+        (e.target as HTMLSlotElement).assignedNodes({flatten: true}).forEach((nodx) =>{
+          if(nodx.nodeType !== 1) return;
+          const node = nodx as HTMLElement;
+          const datalist = node.localName === 'datalist' ? node : node.querySelector('datalist');
+          if(datalist !== null){
+              const target = this.root.querySelector('[target]') as HTMLElement;
+              const itemTransform = {
+                label: ({idx}) => ({
+                  input: ({target}) => (<any>target).value = (<any>datalist.children[idx]).value,
+                  span: x => (datalist.children[idx].textContent || (<any>datalist).children[idx].value)
+                })
+              } as TransformValueOptions;
+              const ctx = init(formTemplate, {
+                Transform:{
+                  form: ({target, ctx}) => repeat(itemTemplate, ctx , datalist.children.length, target, itemTransform)
+                } as TransformRules
+              }, target);
+              ctx.update = update;
+              
+          }
+      })
+    }
+    handleChange(e: Event){
+      this.de('value', {
+        value: (<any>e).target.value
+      })
+    }
+
     
-      get readyToInit() {
-        return true;
-      }
+
 }
 define(XtalRadioGroupMD);
