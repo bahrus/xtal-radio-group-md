@@ -142,8 +142,9 @@ export class XtalRadioGroupMD extends XtalElement {
         });
     }
     handleChange(e) {
+        this.value = e.target.value;
         this.de('value', {
-            value: e.target.value
+            value: this.value
         });
     }
 }
